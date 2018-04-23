@@ -1,0 +1,7 @@
+$(function() {
+  initFirstChart();
+});
+
+function initFirstChart(){
+  
+}
