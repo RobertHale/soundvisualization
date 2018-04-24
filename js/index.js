@@ -45,7 +45,7 @@ function createLineGraph(points, xName, yName){
         .text(xName);
 }
 
-function createBarGraph(points) {
+function createBarGraph(points, xName, yName) {
     let svg = d3.select("body")
         .append("svg")
         .attr("width", width)
@@ -78,6 +78,16 @@ function createBarGraph(points) {
         .attr("y", function(d) {return y(d.y);})
         .attr("width", x.bandwidth())
         .attr("height", function(d) {return height - padding - y(d.y);});
+
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", "translate("+ (padding/2) +","+(height/2)+")rotate(-90)")
+        .text(yName);
+
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", "translate("+ (width/2) +","+(height-(padding/3))+")")
+        .text(xName);
 }
 
 function createScatterPlot(points){
@@ -163,8 +173,8 @@ function onResult(data){
 
 function init(){
     const theData = [{x:1, y:10}, {x:2, y:11}, {x:3, y:15}, {x:4, y:22}, {x:5, y:5}];
-    createLineGraph(theData, "index", "Value");
-    createBarGraph(theData);
+    createLineGraph(theData, "Index", "Value");
+    createBarGraph(theData, "Index", "Value");
     graphArtistAlbumsXFollowers();
 }
 
