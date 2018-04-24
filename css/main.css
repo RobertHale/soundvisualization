@@ -1,6 +1,6 @@
 path {
     stroke: steelblue;
-    stroke-width: 1;
+    stroke-width: 1px;
     fill: none;
 }
 .x.axis line {
@@ -15,4 +15,10 @@ path {
 .y.axis line, .y.axis path {
     fill: none;
     stroke: #000;
+}
+.bar {
+    fill: steelblue;
+}
+.bar:hover {
+    fill: brown;
 }
