@@ -1,0 +1,18 @@
+path {
+    stroke: steelblue;
+    stroke-width: 1;
+    fill: none;
+}
+.x.axis line {
+    stroke: lightgrey;
+}
+.x.axis .minor {
+    stroke-opacity: .5;
+}
+.x.axis path{
+    stroke: black;
+}
+.y.axis line, .y.axis path {
+    fill: none;
+    stroke: #000;
+}
