@@ -2,7 +2,7 @@ const width = 1000,
       height = 500,
       padding = 50;
 
-function createLineGraph(points, xName, yName){
+function createLineGraph(points, xName, yName, title){
     let svg = d3.select("body")
         .append("svg")
         .attr("width", width)
@@ -35,6 +35,12 @@ function createLineGraph(points, xName, yName){
         .attr("d", line(points));
 
     svg.append("text")
+        .attr("x", width/2 )
+        .attr("y", padding)
+        .style("text-anchor", "middle")
+        .text(title);
+
+    svg.append("text")
         .attr("text-anchor", "middle")
         .attr("transform", "translate("+ (padding/2) +","+(height/2)+")rotate(-90)")
         .text(yName);
@@ -45,7 +51,7 @@ function createLineGraph(points, xName, yName){
         .text(xName);
 }
 
-function createBarGraph(points, xName, yName) {
+function createBarGraph(points, xName, yName, title) {
     let svg = d3.select("body")
         .append("svg")
         .attr("width", width)
@@ -80,6 +86,12 @@ function createBarGraph(points, xName, yName) {
         .attr("height", function(d) {return height - padding - y(d.y);});
 
     svg.append("text")
+        .attr("x", width/2 )
+        .attr("y", padding)
+        .style("text-anchor", "middle")
+        .text(title);
+
+    svg.append("text")
         .attr("text-anchor", "middle")
         .attr("transform", "translate("+ (padding/2) +","+(height/2)+")rotate(-90)")
         .text(yName);
@@ -90,7 +102,7 @@ function createBarGraph(points, xName, yName) {
         .text(xName);
 }
 
-function createScatterPlot(points){
+function createScatterPlot(points, xName, yName, title){
     let svg = d3.select("body")
         .append("svg")
         .attr("width", width)
@@ -144,6 +156,22 @@ function createScatterPlot(points){
                 .duration(500)
                 .style("opacity", 0);
         });
+
+    svg.append("text")
+        .attr("x", width/2 )
+        .attr("y", padding)
+        .style("text-anchor", "middle")
+        .text(title);
+
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", "translate("+ (padding/2) +","+(height/2)+")rotate(-90)")
+        .text(yName);
+
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", "translate("+ (width/2) +","+(height-(padding/3))+")")
+        .text(xName);
 }
 
 function appendBottomBuffer(){
@@ -154,7 +182,7 @@ function appendBottomBuffer(){
 }
 
 function graphArtistAlbumsXFollowers() {
-    jQuery.getJSON("http://api.soundtrackdb.me/artist?limit=60").then(results => {onResult(results)});
+    jQuery.getJSON("http://api.soundtrackdb.me/artist?limit=60").then(results => {onResult(results);});
 }
 
 function onResult(data){
@@ -166,15 +194,18 @@ function onResult(data){
     points.sort(function(x, y){
         return d3.ascending(x.x, y.x);
     });
-    // console.log(points);
-    createScatterPlot(points);
+    console.log(points);
+    createScatterPlot(points,
+        "Number of albums",
+        "number of Followers",
+        "Per artist comparison of number of albums compared to followers");
     appendBottomBuffer();
 }
 
 function init(){
     const theData = [{x:1, y:10}, {x:2, y:11}, {x:3, y:15}, {x:4, y:22}, {x:5, y:5}];
-    createLineGraph(theData, "Index", "Value");
-    createBarGraph(theData, "Index", "Value");
+    createLineGraph(theData, "Index", "Value", "Title");
+    createBarGraph(theData, "Index", "Value", "Title");
     graphArtistAlbumsXFollowers();
 }
 
