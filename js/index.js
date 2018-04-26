@@ -233,9 +233,9 @@ function onResult(data){
 }
 
 function init(){
-    const theData = [{x:1, y:10}, {x:2, y:11}, {x:3, y:15}, {x:4, y:22}, {x:5, y:5}];
-    createLineGraph(theData, "Index", "Value", "Title");
-    createBarGraph(theData, "Index", "Value", "Title");
+    // const theData = [{x:1, y:10}, {x:2, y:11}, {x:3, y:15}, {x:4, y:22}, {x:5, y:5}];
+    // createLineGraph(theData, "Index", "Value", "Title");
+    // createBarGraph(theData, "Index", "Value", "Title");
     graphArtistAlbumsXFollowers();
     graphMediaGenreCount();
 }

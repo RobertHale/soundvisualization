@@ -1,6 +1,8 @@
 body{
     background-color: #473c8b;
     color: yellow;
+    /*stroke: darkgray;*/
+    fill: darkgray;
 }
 path {
     stroke: steelblue;
@@ -15,12 +17,16 @@ path {
 }
 .x.axis .minor {
     stroke-opacity: .5;
+    stroke: darkgray;
 }
 .x.axis path{
     stroke: darkgray;
 }
 .y.axis line, .y.axis path {
     fill: none;
+    stroke: darkgray;
+}
+.y.axis text {
     stroke: darkgray;
 }
 .bar {
