@@ -120,7 +120,7 @@ function createScatterPlot(points, xName, yName, title){
         yAxis = d3.axisLeft().scale(yScale);
 
     xScale.domain([d3.min(points, xValue)-1, d3.max(points, xValue)]);
-    yScale.domain([-1000, d3.max(points, yValue)]);
+    yScale.domain([d3.min(points, yValue)-1, d3.max(points, yValue)]);
 
     let tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
@@ -190,6 +190,25 @@ function graphMediaGenreCount(){
     jQuery.getJSON("http://api.soundtrackdb.me/media?limit=1065").then(results => {onResultGenre(results);});
 }
 
+function graphMediaPopularityRating(){
+    jQuery.getJSON("http://api.soundtrackdb.me/media?limit=1065").then(results => {onResultMedia(results)});
+}
+
+function onResultMedia(data){
+    points = [];
+    // console.log(data.items[0].seasons);
+    for (i = 0; i < data.count; i++){
+        // console.log(data.items[i].seasons);
+        point = {y: data.items[i].popularity, x: data.items[i].average_rating, name: data.items[i].name};
+        points.push(point);
+    }
+    points.sort(function(x, y){
+        return d3.ascending(x.x, y.x);
+    });
+    createScatterPlot(points, "average rating", "popularity", "Media average rating to popularity");
+    appendBottomBuffer();
+}
+
 function onResultGenre(data){
     mapCounts = {};
     console.log(data);
@@ -238,6 +257,7 @@ function init(){
     // createBarGraph(theData, "Index", "Value", "Title");
     graphArtistAlbumsXFollowers();
     graphMediaGenreCount();
+    graphMediaPopularityRating();
 }
 
 window.onload = init;
