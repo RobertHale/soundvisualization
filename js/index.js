@@ -1,6 +1,6 @@
-const width = 1000,
-      height = 500,
-      padding = 50;
+const width = 1100,
+      height = 600,
+      padding = 100;
 
 function createLineGraph(points, xName, yName, title){
     let svg = d3.select("body")
@@ -11,7 +11,7 @@ function createLineGraph(points, xName, yName, title){
     let x = d3.scaleLinear().range([padding, width-padding]);
     let y = d3.scaleLinear().range([height-padding, padding]);
     x.domain([d3.min(points, function(d){return d.x;}), d3.max(points, function(d){return d.x;})]);
-    y.domain([0, d3.max(points, function (d) {return d.y;})]).nice();
+    y.domain([d3.min(points, function(d){return d.x;}), d3.max(points, function (d) {return d.y;})]).nice();
 
     let xAxis = d3.axisBottom().scale(x).ticks(5);
     let yAxis = d3.axisLeft().scale(y).ticks(4);
@@ -37,6 +37,7 @@ function createLineGraph(points, xName, yName, title){
     svg.append("text")
         .attr("x", width/2 )
         .attr("y", padding)
+        .style("color", "yellow")
         .style("text-anchor", "middle")
         .text(title);
 
@@ -119,7 +120,7 @@ function createScatterPlot(points, xName, yName, title){
         yAxis = d3.axisLeft().scale(yScale);
 
     xScale.domain([d3.min(points, xValue)-1, d3.max(points, xValue)]);
-    yScale.domain([d3.min(points, yValue)-1, d3.max(points, yValue)]);
+    yScale.domain([-1000, d3.max(points, yValue)]);
 
     let tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
@@ -185,6 +186,35 @@ function graphArtistAlbumsXFollowers() {
     jQuery.getJSON("http://api.soundtrackdb.me/artist?limit=60").then(results => {onResult(results);});
 }
 
+function graphMediaGenreCount(){
+    jQuery.getJSON("http://api.soundtrackdb.me/media?limit=1065").then(results => {onResultGenre(results);});
+}
+
+function onResultGenre(data){
+    mapCounts = {};
+    console.log(data);
+    data.items.forEach(function (e) {
+        e.genres.forEach(function (g) {
+            if (g.name in mapCounts) {
+                mapCounts[g.name] += 1;
+            } else {
+                mapCounts[g.name] = 1;
+            }
+        });
+    });
+    console.log("finished");
+    points = [];
+    count = 0;
+    for (let genre in mapCounts){
+        points.push({name: genre, x: count, y: mapCounts[genre]});
+        count++;
+    }
+    createBarGraph(points,
+        "index",
+        "number of occurences",
+        "genre count");
+}
+
 function onResult(data){
     points = [];
     for (i = 0; i < data.count; i++){
@@ -207,6 +237,7 @@ function init(){
     createLineGraph(theData, "Index", "Value", "Title");
     createBarGraph(theData, "Index", "Value", "Title");
     graphArtistAlbumsXFollowers();
+    graphMediaGenreCount();
 }
 
 window.onload = init;

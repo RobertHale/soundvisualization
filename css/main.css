@@ -1,23 +1,30 @@
+body{
+    background-color: #473c8b;
+    color: yellow;
+}
 path {
     stroke: steelblue;
     stroke-width: 3px;
     fill: none;
 }
+.x.axis text {
+    stroke: darkgray;
+}
 .x.axis line {
-    stroke: lightgrey;
+    stroke: darkgray;
 }
 .x.axis .minor {
     stroke-opacity: .5;
 }
 .x.axis path{
-    stroke: black;
+    stroke: darkgray;
 }
 .y.axis line, .y.axis path {
     fill: none;
-    stroke: #000;
+    stroke: darkgray;
 }
 .bar {
-    fill: steelblue;
+    fill: #2e2e2e;
 }
 .bar:hover {
     fill: brown;
