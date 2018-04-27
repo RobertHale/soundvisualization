@@ -223,15 +223,11 @@ function onResultGenre(data){
     });
     console.log("finished");
     points = [];
-    count = 0;
     for (let genre in mapCounts){
-        points.push({name: genre, x: count, y: mapCounts[genre]});
+        points.push({label: genre, count: mapCounts[genre]});
         count++;
     }
-    createBarGraph(points,
-        "index",
-        "number of occurences",
-        "genre count");
+    createPieChart(points);
 }
 
 function onResult(data){
@@ -251,10 +247,66 @@ function onResult(data){
     appendBottomBuffer();
 }
 
+function createPieChart(data){
+    let radius = Math.min(width, height) / 2;
+    let donutWidth = radius / 1.5;
+    let legendRectSize = 18;
+    let legendSpacing = 4;
+    let color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    let svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")");
+
+    let arc = d3.arc()
+        .innerRadius(radius - donutWidth)
+        .outerRadius(radius);
+
+    let pie = d3.pie()
+        .value(function(d) {return d.count;})
+        .sort(null);
+
+    let path = svg.selectAll("path")
+        .data(pie(data))
+        .enter()
+        .append("path")
+        .attr("d", arc)
+        .attr("fill", function(d, i) {return color(d.data.label);});
+
+    let legend = svg.selectAll(".legend")
+        .data(color.domain())
+        .enter()
+        .append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d, i) {
+            let height = legendRectSize + legendSpacing;
+            let offset = height * color.domain().length / 2;
+            let horz = -2 * legendRectSize;
+            let vert = i * height - offset;
+            return "translate(" + horz + "," + vert + ")";
+        });
+
+    legend.append("rect")
+        .attr("width", legendRectSize)
+        .attr("height", legendRectSize)
+        .style("fill", color)
+        .style("stroke", color);
+
+    legend.append("text")
+        .attr("x", legendRectSize + legendSpacing)
+        .attr("y", legendRectSize - legendSpacing)
+        .text(function(d) {return d;});
+}
+
 function init(){
     // const theData = [{x:1, y:10}, {x:2, y:11}, {x:3, y:15}, {x:4, y:22}, {x:5, y:5}];
+    const pieData = [{label: "hello", count: 10}, {label: "pie", count: 22}, {label: "chart", count: 10}];
     // createLineGraph(theData, "Index", "Value", "Title");
     // createBarGraph(theData, "Index", "Value", "Title");
+    createPieChart(pieData);
     graphArtistAlbumsXFollowers();
     graphMediaGenreCount();
     graphMediaPopularityRating();

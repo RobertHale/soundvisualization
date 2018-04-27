@@ -1,13 +1,22 @@
-body{
+body {
     background-color: #473c8b;
-    color: yellow;
-    /*stroke: darkgray;*/
+    stroke: darkgray;
     fill: darkgray;
 }
 path {
     stroke: steelblue;
     stroke-width: 3px;
-    fill: none;
+}
+rect {
+    stroke-width: 2px;
+}
+#chart {
+    height: 360px;
+    position: relative;
+    width: 360px;
+}
+.legend {
+    font-size: 12px;
 }
 .x.axis text {
     stroke: darkgray;
