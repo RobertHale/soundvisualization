@@ -225,8 +225,8 @@ function onResultGenre(data){
     points = [];
     for (let genre in mapCounts){
         points.push({label: genre, count: mapCounts[genre]});
-        count++;
     }
+    createTitleSVG("Occurences of genres in TV show and movies");
     createPieChart(points);
 }
 
@@ -248,8 +248,9 @@ function onResult(data){
 }
 
 function createPieChart(data){
+    let height = 1000;
     let radius = Math.min(width, height) / 2;
-    let donutWidth = radius / 1.5;
+    let donutWidth = radius / 2.2;
     let legendRectSize = 18;
     let legendSpacing = 4;
     let color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -301,12 +302,26 @@ function createPieChart(data){
         .text(function(d) {return d;});
 }
 
+//only really useful for piechart atm
+function createTitleSVG(title){
+    let svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", 150);
+
+    svg.append("text")
+        .attr("x", width/2 )
+        .attr("y", padding)
+        .style("text-anchor", "middle")
+        .text(title);
+}
+
 function init(){
     // const theData = [{x:1, y:10}, {x:2, y:11}, {x:3, y:15}, {x:4, y:22}, {x:5, y:5}];
-    const pieData = [{label: "hello", count: 10}, {label: "pie", count: 22}, {label: "chart", count: 10}];
+    // const pieData = [{label: "hello", count: 10}, {label: "pie", count: 22}, {label: "chart", count: 10}];
     // createLineGraph(theData, "Index", "Value", "Title");
     // createBarGraph(theData, "Index", "Value", "Title");
-    createPieChart(pieData);
+    // createPieChart(pieData);
     graphArtistAlbumsXFollowers();
     graphMediaGenreCount();
     graphMediaPopularityRating();
