@@ -266,7 +266,10 @@ function graphMediaPopularityRating(){
 
 function graphTVSeasonPopularity(){
   jQuery.getJSON("http://api.soundtrackdb.me/media?type=tv_show&limit=59").then(results => {onSeason(results)});
+}
 
+function graphMediaRuntimePopularity(){
+    jQuery.getJSON("http://api.soundtrackdb.me/media?limit=1065").then(results => {onResultRuntime(results)});
 }
 
 function onResultMedia(data){
@@ -361,6 +364,19 @@ function onSeason(data){
     appendBottomBuffer();
 }
 
+function onResultRuntime(data){
+  points = [];
+  for (i = 0; i < data.count; i++){
+      point = {y: data.items[i].popularity, x: data.items[i].runtime, name: data.items[i].name};
+      points.push(point);
+  }
+  points.sort(function(x, y){
+      return d3.ascending(x.x, y.x);
+  });
+  createScatterPlot(points, "runtime", "popularity", "Media runtime to popularity");
+  appendBottomBuffer();
+}
+
 
 function init(){
     // const theData = [{x:1, y:10}, {x:2, y:11}, {x:3, y:15}, {x:4, y:22}, {x:5, y:5}];
@@ -372,6 +388,7 @@ function init(){
     graphMediaGenreCount();
     graphMediaPopularityRating();
     graphTVSeasonPopularity();
+    graphMediaRuntimePopularity();
 }
 
 window.onload = init;
