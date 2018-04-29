@@ -1,7 +1,7 @@
 const width = 1100,
       height = 600,
       padding = 100;
-
+//functions below are the templates for certain graphs
 function createLineGraph(points, xName, yName, title){
     let svg = d3.select("body")
         .append("svg")
@@ -175,78 +175,6 @@ function createScatterPlot(points, xName, yName, title){
         .text(xName);
 }
 
-function appendBottomBuffer(){
-    d3.select("body")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", 100);
-}
-
-function graphArtistAlbumsXFollowers() {
-    jQuery.getJSON("http://api.soundtrackdb.me/artist?limit=60").then(results => {onResult(results);});
-}
-
-function graphMediaGenreCount(){
-    jQuery.getJSON("http://api.soundtrackdb.me/media?limit=1065").then(results => {onResultGenre(results);});
-}
-
-function graphMediaPopularityRating(){
-    jQuery.getJSON("http://api.soundtrackdb.me/media?limit=1065").then(results => {onResultMedia(results)});
-}
-
-function onResultMedia(data){
-    points = [];
-    // console.log(data.items[0].seasons);
-    for (i = 0; i < data.count; i++){
-        // console.log(data.items[i].seasons);
-        point = {y: data.items[i].popularity, x: data.items[i].average_rating, name: data.items[i].name};
-        points.push(point);
-    }
-    points.sort(function(x, y){
-        return d3.ascending(x.x, y.x);
-    });
-    createScatterPlot(points, "average rating", "popularity", "Media average rating to popularity");
-    appendBottomBuffer();
-}
-
-function onResultGenre(data){
-    mapCounts = {};
-    console.log(data);
-    data.items.forEach(function (e) {
-        e.genres.forEach(function (g) {
-            if (g.name in mapCounts) {
-                mapCounts[g.name] += 1;
-            } else {
-                mapCounts[g.name] = 1;
-            }
-        });
-    });
-    console.log("finished");
-    points = [];
-    for (let genre in mapCounts){
-        points.push({label: genre, count: mapCounts[genre]});
-    }
-    createTitleSVG("Occurences of genres in TV show and movies");
-    createPieChart(points);
-}
-
-function onResult(data){
-    points = [];
-    for (i = 0; i < data.count; i++){
-        point = {name: data.items[i].name, x: data.items[i].num_albums, y: data.items[i].followers};
-        points.push(point);
-    }
-    points.sort(function(x, y){
-        return d3.ascending(x.x, y.x);
-    });
-    console.log(points);
-    createScatterPlot(points,
-        "Number of albums",
-        "number of Followers",
-        "Per artist comparison of number of albums compared to followers");
-    appendBottomBuffer();
-}
-
 function createPieChart(data){
     let height = 1000;
     let radius = Math.min(width, height) / 2;
@@ -316,6 +244,124 @@ function createTitleSVG(title){
         .text(title);
 }
 
+function appendBottomBuffer(){
+    d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", 100);
+}
+
+//functions below grab data
+function graphArtistAlbumsXFollowers() {
+    jQuery.getJSON("http://api.soundtrackdb.me/artist?limit=60").then(results => {onResult(results);});
+}
+
+function graphMediaGenreCount(){
+    jQuery.getJSON("http://api.soundtrackdb.me/media?limit=1065").then(results => {onResultGenre(results);});
+}
+
+function graphMediaPopularityRating(){
+    jQuery.getJSON("http://api.soundtrackdb.me/media?limit=1065").then(results => {onResultMedia(results)});
+}
+
+function graphTVSeasonPopularity(){
+  jQuery.getJSON("http://api.soundtrackdb.me/media?type=tv_show&limit=59").then(results => {onSeason(results)});
+
+}
+
+function onResultMedia(data){
+    points = [];
+    // console.log(data.items[0].seasons);
+    for (i = 0; i < data.count; i++){
+        // console.log(data.items[i].seasons);
+        point = {y: data.items[i].popularity, x: data.items[i].average_rating, name: data.items[i].name};
+        points.push(point);
+    }
+    points.sort(function(x, y){
+        return d3.ascending(x.x, y.x);
+    });
+    createScatterPlot(points, "average rating", "popularity", "Media average rating to popularity");
+    appendBottomBuffer();
+}
+
+function onResultGenre(data){
+    mapCounts = {};
+    //console.log(data);
+    data.items.forEach(function (e) {
+        e.genres.forEach(function (g) {
+            if (g.name in mapCounts) {
+                mapCounts[g.name] += 1;
+            } else {
+                mapCounts[g.name] = 1;
+            }
+        });
+    });
+    //console.log(mapCounts);
+    points = [];
+    for (let genre in mapCounts){
+        points.push({label: genre, count: mapCounts[genre]});
+    }
+    createTitleSVG("Occurences of genres in TV show and movies");
+    createPieChart(points);
+}
+
+function onResult(data){
+    points = [];
+    for (i = 0; i < data.count; i++){
+        point = {name: data.items[i].name, x: data.items[i].num_albums, y: data.items[i].followers};
+        points.push(point);
+    }
+    points.sort(function(x, y){
+        return d3.ascending(x.x, y.x);
+    });
+    //console.log(points);
+    createScatterPlot(points,
+        "Number of albums",
+        "number of Followers",
+        "Per artist comparison of number of albums compared to followers");
+    appendBottomBuffer();
+}
+
+function onSeason(data){
+    var seasons = {};
+    var popularity = {};
+    var averagePopularity = [];
+    points = [];
+    for (a = 0; a < data.count; a++){
+      if (data.items[a].seasons in seasons) {
+        seasons[data.items[a].seasons] += 1;
+      }
+      else{
+        seasons[data.items[a].seasons] = 1;
+      }
+      if (data.items[a].seasons in popularity) {
+        popularity[data.items[a].seasons].push(data.items[a].popularity);
+      }
+      else{
+        popularity[data.items[a].seasons] = [];
+        popularity[data.items[a].seasons].push(data.items[a].popularity);
+      }
+    }
+    for (var key in popularity) {
+      var value = popularity[key]
+      let sum = value.reduce((total, val) => {
+        return total + val;
+      });
+      var averagePop = sum/seasons[key];
+      averagePopularity[key] = averagePop;
+    }
+    for (i = 0; i < data.count; i++){
+       point = {y: averagePopularity[data.items[i].seasons], x: data.items[i].seasons, name: data.items[i].name};
+       points.push(point);
+    }
+    points.sort(function(x, y){
+        return d3.ascending(x.x, y.x);
+    });
+    createLineGraph(points, "Number of seasons per TV show", "Average popularity per # of seasons", "TV show seasons to popularity");
+    appendBottomBuffer();
+}
+
+
 function init(){
     // const theData = [{x:1, y:10}, {x:2, y:11}, {x:3, y:15}, {x:4, y:22}, {x:5, y:5}];
     // const pieData = [{label: "hello", count: 10}, {label: "pie", count: 22}, {label: "chart", count: 10}];
@@ -325,6 +371,7 @@ function init(){
     graphArtistAlbumsXFollowers();
     graphMediaGenreCount();
     graphMediaPopularityRating();
+    graphTVSeasonPopularity();
 }
 
 window.onload = init;
