@@ -176,9 +176,9 @@ function createScatterPlot(points, xName, yName, title){
 }
 
 function createPieChart(data){
-    let height = 1000;
+    let height = 800;
     let radius = Math.min(width, height) / 2;
-    let donutWidth = radius / 2.2;
+    let donutWidth = radius / 3;
     let legendRectSize = 18;
     let legendSpacing = 4;
     let color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -360,7 +360,7 @@ function onSeason(data){
     points.sort(function(x, y){
         return d3.ascending(x.x, y.x);
     });
-    createLineGraph(points, "Number of seasons per TV show", "Average popularity per # of seasons", "TV show seasons to popularity");
+    createBarGraph(points, "Number of seasons per TV show", "Average popularity per # of seasons", "TV show seasons to popularity");
     appendBottomBuffer();
 }
 
@@ -384,11 +384,11 @@ function init(){
     // createLineGraph(theData, "Index", "Value", "Title");
     // createBarGraph(theData, "Index", "Value", "Title");
     // createPieChart(pieData);
-    graphArtistAlbumsXFollowers();
+    // graphArtistAlbumsXFollowers();
+    // graphMediaPopularityRating();
+    // graphTVSeasonPopularity();
+    // graphMediaRuntimePopularity();
     graphMediaGenreCount();
-    graphMediaPopularityRating();
-    graphTVSeasonPopularity();
-    graphMediaRuntimePopularity();
 }
 
 window.onload = init;
